@@ -69,6 +69,7 @@ class BreadcrumbRuntime implements RuntimeExtensionInterface
         $last->setClass('last');
         $breadcrumb[] = $last;
 
+
         return $breadcrumb;
     }
 

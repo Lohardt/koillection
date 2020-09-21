@@ -42,9 +42,17 @@ class CollectionController extends AbstractController
     public function index() : Response
     {
         $collections = $this->getDoctrine()->getRepository(Collection::class)->findBy(['parent' => null], ['title' => 'ASC']);
+        $itemsCounter = 0;
+        $childrenCounter = \count($collections);
+        foreach ($collections as $collection) {
+            $itemsCounter += $collection->getItemsCounter();
+            $childrenCounter += $collection->getChildrenCounter();
+        }
 
         return $this->render('App/Collection/index.html.twig', [
-            'collections' => $collections
+            'collections' => $collections,
+            'itemsCounter' => $itemsCounter,
+            'childrenCounter' => $childrenCounter
         ]);
     }
 

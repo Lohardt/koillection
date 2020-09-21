@@ -38,13 +38,16 @@ class AlbumController extends AbstractController
     {
         $albums = $this->getDoctrine()->getRepository(Album::class)->findBy(['parent' => null], ['title' => 'ASC']);
         $photosCounter = 0;
+        $childrenCounter = \count($albums);
         foreach ($albums as $album) {
-            $photosCounter += \count($album->getPhotos());
+            $photosCounter += $album->getPhotosCounter();
+            $childrenCounter += $album->getChildrenCounter();
         }
 
         return $this->render('App/Album/index.html.twig', [
             'albums' => $albums,
-            'photosCounter' => $photosCounter
+            'photosCounter' => $photosCounter,
+            'childrenCounter' => $childrenCounter
         ]);
     }
 

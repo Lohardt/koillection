@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Annotation\Upload;
-use App\Entity\Interfaces\CacheableInterface;
+use App\Entity\Interfaces\ChildCountableInterface;
+use App\Entity\Interfaces\ItemCountableInterface;
 use App\Enum\VisibilityEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\File\File;
  *     @ORM\Index(name="idx_photo_visibility", columns={"visibility"})
  * })
  */
-class Photo implements CacheableInterface
+class Photo implements ItemCountableInterface
 {
     /**
      * @var UuidInterface
@@ -104,6 +105,11 @@ class Photo implements CacheableInterface
     {
         $this->id = Uuid::uuid4();
         $this->visibility = VisibilityEnum::VISIBILITY_PUBLIC;
+    }
+
+    public function getParent(): ?ChildCountableInterface
+    {
+        return $this->getAlbum();
     }
 
     /**

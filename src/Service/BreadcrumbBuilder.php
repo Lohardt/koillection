@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Interfaces\BreadcrumbableInterface;
+use App\Entity\Interfaces\ChildCountableInterface;
 use App\Entity\Item;
-use App\Entity\Wishlist;
 use App\Model\BreadcrumbElement;
 
 class BreadcrumbBuilder
@@ -51,7 +51,7 @@ class BreadcrumbBuilder
 
         $breadcrumb[] = $breadcrumbElement;
 
-        if (method_exists($entity, 'getParent') && $entity->getParent()) {
+        if ($entity instanceOf ChildCountableInterface && $entity->getParent()) {
             $breadcrumb = \array_merge($this->build($entity->getParent()), $breadcrumb);
         }
 

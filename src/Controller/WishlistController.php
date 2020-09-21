@@ -39,9 +39,17 @@ class WishlistController extends AbstractController
     public function index() : Response
     {
         $wishlists = $this->getDoctrine()->getRepository(Wishlist::class)->findBy(['parent' => null], ['name' => 'ASC']);
+        $wishesCounter = 0;
+        $childrenCounter = \count($wishlists);
+        foreach ($wishlists as $wishlist) {
+            $wishesCounter += $wishlist->getWishesCounter();
+            $childrenCounter += $wishlist->getChildrenCounter();
+        }
 
         return $this->render('App/Wishlist/index.html.twig', [
-            'wishlists' => $wishlists
+            'wishlists' => $wishlists,
+            'wishesCounter' => $wishesCounter,
+            'childrenCounter' => $childrenCounter
         ]);
     }
 

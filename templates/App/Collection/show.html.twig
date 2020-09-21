@@ -36,8 +36,8 @@
             <div class="right">
                 <h1>{{ collection.title }}</h1>
                 <ul class="nav nav-pills">
-                    <li>{{ 'counter.item'|trans({'%count%': getCounters(collection).items}) }}</li>
-                    <li>{{ 'counter.collection'|trans({'%count%': getCounters(collection).children}) }}</li>
+                    <li>{{ 'counter.item'|trans({'%count%': collection.itemsCounter}) }}</li>
+                    <li>{{ 'counter.collection'|trans({'%count%': collection.childrenCounter}) }}</li>
                 </ul>
             </div>
             <div class="clearfix"></div>

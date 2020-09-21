@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Annotation\Upload;
 use App\Entity\Interfaces\BreadcrumbableInterface;
-use App\Entity\Interfaces\CacheableInterface;
+use App\Entity\Interfaces\ChildCountableInterface;
 use App\Entity\Interfaces\LoggableInterface;
 use App\Enum\VisibilityEnum;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\File\File;
  *     @ORM\Index(name="idx_album_visibility", columns={"visibility"})
  * })
  */
-class Album implements BreadcrumbableInterface, LoggableInterface, CacheableInterface
+class Album implements BreadcrumbableInterface, LoggableInterface, ChildCountableInterface
 {
     /**
      * @var UuidInterface
@@ -94,6 +94,18 @@ class Album implements BreadcrumbableInterface, LoggableInterface, CacheableInte
     private string $visibility;
 
     /**
+     * @var int
+     * @ORM\Column(type="integer", options={"default" : 0})
+     */
+    private int $photosCounter;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", options={"default" : 0})
+     */
+    private int $childrenCounter;
+
+    /**
      * @var \DateTimeInterface
      * @ORM\Column(type="datetime")
      */
@@ -112,6 +124,8 @@ class Album implements BreadcrumbableInterface, LoggableInterface, CacheableInte
     {
         $this->id = Uuid::uuid4();
         $this->seenCounter = 0;
+        $this->photosCounter = 0;
+        $this->childrenCounter = 0;
         $this->photos = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->visibility = VisibilityEnum::VISIBILITY_PUBLIC;
@@ -123,6 +137,26 @@ class Album implements BreadcrumbableInterface, LoggableInterface, CacheableInte
     public function __toString(): string
     {
         return $this->getTitle() ?? '';
+    }
+
+    public function increaseItemsCounterBy($number)
+    {
+        $this->photosCounter = $this->photosCounter + $number;
+    }
+
+    public function decreaseItemsCounterBy($number)
+    {
+        $this->photosCounter = $this->photosCounter - $number;
+    }
+
+    public function increaseChildrenCounterBy($number)
+    {
+        $this->childrenCounter = $this->childrenCounter + $number;
+    }
+
+    public function decreaseChildrenCounterBy($number)
+    {
+        $this->childrenCounter = $this->childrenCounter - $number;
     }
 
     /**
@@ -320,5 +354,21 @@ class Album implements BreadcrumbableInterface, LoggableInterface, CacheableInte
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPhotosCounter(): int
+    {
+        return $this->photosCounter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getChildrenCounter(): int
+    {
+        return $this->childrenCounter;
     }
 }

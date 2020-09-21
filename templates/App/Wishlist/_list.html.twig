@@ -11,7 +11,7 @@
         </a>
         <span class="collection-title">{{ wishlist.name|u.truncate(27) }}</span>
         <p class="collection-stats">
-            {{ 'counter.wish'|trans({'%count%': getCounters(wishlist).items}) }}
+            {{ 'counter.wish'|trans({'%count%': wishlist.wishesCounter}) }}
         </p>
     </div>
 {% endfor %}

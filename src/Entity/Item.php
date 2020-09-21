@@ -6,7 +6,8 @@ namespace App\Entity;
 
 use App\Annotation\Upload;
 use App\Entity\Interfaces\BreadcrumbableInterface;
-use App\Entity\Interfaces\CacheableInterface;
+use App\Entity\Interfaces\ChildCountableInterface;
+use App\Entity\Interfaces\ItemCountableInterface;
 use App\Entity\Interfaces\LoggableInterface;
 use App\Enum\DatumTypeEnum;
 use App\Enum\VisibilityEnum;
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_item_visibility", columns={"visibility"})
  * })
  */
-class Item implements BreadcrumbableInterface, LoggableInterface, CacheableInterface
+class Item implements BreadcrumbableInterface, LoggableInterface, ItemCountableInterface
 {
     /**
      * @var UuidInterface
@@ -147,6 +148,11 @@ class Item implements BreadcrumbableInterface, LoggableInterface, CacheableInter
     public function __toString(): string
     {
         return $this->getName() ?? '';
+    }
+
+    public function getParent(): ?ChildCountableInterface
+    {
+        return $this->getCollection();
     }
 
     /**

@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Annotation\Upload;
 use App\Entity\Interfaces\BreadcrumbableInterface;
-use App\Entity\Interfaces\CacheableInterface;
+use App\Entity\Interfaces\ChildCountableInterface;
 use App\Entity\Interfaces\LoggableInterface;
 use App\Enum\VisibilityEnum;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_collection_visibility", columns={"visibility"})
  * })
  */
-class Collection implements LoggableInterface, BreadcrumbableInterface, CacheableInterface
+class Collection implements LoggableInterface, BreadcrumbableInterface, ChildCountableInterface
 {
     /**
      * @var UuidInterface
@@ -105,6 +105,18 @@ class Collection implements LoggableInterface, BreadcrumbableInterface, Cacheabl
 
     /**
      * @var int
+     * @ORM\Column(type="integer", options={"default" : 0})
+     */
+    private int $itemsCounter;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", options={"default" : 0})
+     */
+    private int $childrenCounter;
+
+    /**
+     * @var int
      * @ORM\Column(type="integer")
      */
     private int $seenCounter;
@@ -138,6 +150,8 @@ class Collection implements LoggableInterface, BreadcrumbableInterface, Cacheabl
         $this->data = new ArrayCollection();
         $this->visibility = VisibilityEnum::VISIBILITY_PUBLIC;
         $this->seenCounter = 0;
+        $this->itemsCounter = 0;
+        $this->childrenCounter = 0;
     }
 
     /**
@@ -146,6 +160,26 @@ class Collection implements LoggableInterface, BreadcrumbableInterface, Cacheabl
     public function __toString(): string
     {
         return $this->getTitle() ?? '';
+    }
+
+    public function increaseItemsCounterBy($number)
+    {
+        $this->itemsCounter = $this->itemsCounter + $number;
+    }
+
+    public function decreaseItemsCounterBy($number)
+    {
+        $this->itemsCounter = $this->itemsCounter - $number;
+    }
+
+    public function increaseChildrenCounterBy($number)
+    {
+        $this->childrenCounter = $this->childrenCounter + $number;
+    }
+
+    public function decreaseChildrenCounterBy($number)
+    {
+        $this->childrenCounter = $this->childrenCounter - $number;
     }
 
     /**
@@ -410,5 +444,21 @@ class Collection implements LoggableInterface, BreadcrumbableInterface, Cacheabl
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getItemsCounter(): int
+    {
+        return $this->itemsCounter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getChildrenCounter(): int
+    {
+        return $this->childrenCounter;
     }
 }
